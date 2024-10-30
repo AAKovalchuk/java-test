@@ -1,0 +1,47 @@
+name: Build and Deploy Java Application
+on:
+  workflow_dispatch:
+  push:
+    branches: 
+      - main
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 8
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: '8'
+
+      - name: Build with Gradle
+        run: |
+          docker run --rm -v "$PWD":/workspace -w /workspace openjdk:8-jdk-alpine ./gradlew clean build
+
+      - name: Set version
+        id: set_version
+        run: |
+          if [ -f .version ]; then
+            current_version=$(cat .version)
+            new_version=$(awk -F. '{$NF+=1; OFS="."; print $0}' <<< "$current_version")
+          else
+            new_version="1.0"
+          fi
+          echo "$new_version" > .version
+          echo "new_version=$new_version" >> $GITHUB_ENV
+
+      - name: Build Docker Image
+        run: |
+          docker build -t 192.168.2.100:5000/challenge-app:${{ env.new_version }} -f Dockerfile .
+
+      - name: Push Docker Image
+        env:
+          DOCKER_IMAGE_TAG: 192.168.2.100:5000/challenge-app:${{ env.new_version }}
+        run: |
+          docker push $DOCKER_IMAGE_TAG
+
+
