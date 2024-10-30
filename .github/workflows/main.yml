@@ -35,11 +35,10 @@ jobs:
             current_version=$(cat .version)
             new_version=$(awk -F. '{$NF+=1; OFS="."; print $0}' <<< "$current_version")
           else
-            new_version="1.0"
+            new_version="1.5"
           fi
           echo "$new_version" > .version
           echo "new_version=$new_version" >> $GITHUB_ENV
-
 
       - name: Build Docker Image
         run: |
