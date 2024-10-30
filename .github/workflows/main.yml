@@ -28,34 +28,18 @@ jobs:
         run: |
           sudo chown -R runner:runner .
 
-      - name: Download version artifact
-        continue-on-error: true
-        uses: actions/download-artifact@v4
-        with:
-          name: version-file
-          path: .
-
       - name: Set version
         id: set_version
         run: |
-          # Проверяем, существует ли файл .version; если нет - создаем его с начальной версией
           if [ -f .version ]; then
             current_version=$(cat .version)
+            new_version=$(awk -F. '{$NF+=1; OFS="."; print $0}' <<< "$current_version")
           else
-            current_version="1.0" 
-            echo "$current_version" > .version
+            new_version="1.0"
           fi
-          new_version=$(awk -F. '{$NF+=1; OFS="."; print $0}' <<< "$current_version")
           echo "$new_version" > .version
           echo "new_version=$new_version" >> $GITHUB_ENV
 
-
-      - name: Save version artifact
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: version-file
-          path: .version
 
       - name: Build Docker Image
         run: |
