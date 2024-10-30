@@ -29,8 +29,8 @@ jobs:
           sudo chown -R runner:runner .
 
       - name: Download version artifact
-        if: always()  # Пытаемся загрузить предыдущий артефакт .version
-        uses: actions/download-artifact@v2
+        if: always()
+        uses: actions/download-artifact@v4
         with:
           name: version-file
           path: .
@@ -49,7 +49,7 @@ jobs:
 
       - name: Save version artifact
         if: always()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: version-file
           path: .version
