@@ -24,6 +24,10 @@ jobs:
         run: |
           sudo docker run --ulimit nofile=8096:8096 --rm -v "$PWD":/workspace -w /workspace -e APP_API_KEY="${APP_API_KEY}" openjdk:8-jdk-alpine ./gradlew clean build
 
+      - name: Fix owners
+        run: |
+          sudo chown -R runner:runner .
+
       - name: Set version
         id: set_version
         run: |
