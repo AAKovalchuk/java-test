@@ -28,6 +28,13 @@ jobs:
         run: |
           sudo chown -R runner:runner .
 
+      - name: Download version artifact
+        if: always()  # Пытаемся загрузить предыдущий артефакт .version
+        uses: actions/download-artifact@v2
+        with:
+          name: version-file
+          path: .
+
       - name: Set version
         id: set_version
         run: |
@@ -39,6 +46,13 @@ jobs:
           fi
           echo "$new_version" > .version
           echo "new_version=$new_version" >> $GITHUB_ENV
+
+      - name: Save version artifact
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: version-file
+          path: .version
 
       - name: Build Docker Image
         run: |
