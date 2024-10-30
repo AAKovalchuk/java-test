@@ -20,7 +20,7 @@ jobs:
 
       - name: Build with Gradle
         run: |
-          sudo docker run --rm -v "$PWD":/workspace -w /workspace openjdk:8-jdk-alpine ./gradlew clean build
+          sudo docker run --ulimit nofile=8096:8096 --rm -v "$PWD":/workspace -w /workspace openjdk:8-jdk-alpine ./gradlew clean build
 
       - name: Set version
         id: set_version
