@@ -20,7 +20,7 @@ jobs:
 
       - name: Build with Gradle
         run: |
-          docker run --rm -v "$PWD":/workspace -w /workspace openjdk:8-jdk-alpine ./gradlew clean build
+          sudo docker run --rm -v "$PWD":/workspace -w /workspace openjdk:8-jdk-alpine ./gradlew clean build
 
       - name: Set version
         id: set_version
@@ -36,12 +36,12 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build -t 192.168.2.100:5000/challenge-app:${{ env.new_version }} -f Dockerfile .
+          sudo docker build -t 192.168.2.100:5000/challenge-app:${{ env.new_version }} -f Dockerfile .
 
       - name: Push Docker Image
         env:
           DOCKER_IMAGE_TAG: 192.168.2.100:5000/challenge-app:${{ env.new_version }}
         run: |
-          docker push $DOCKER_IMAGE_TAG
+          sudo docker push $DOCKER_IMAGE_TAG
 
 
