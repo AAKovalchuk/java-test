@@ -22,12 +22,7 @@ jobs:
         env:
           APP_API_KEY: ${{ secrets.APP_API_KEY }}
         run: |
-          sudo docker run\ 
-            --ulimit nofile=8096:8096\ 
-            --rm -v "$PWD":/workspace -w /workspace\
-            -e APP_API_KEY="${APP_API_KEY}"\ 
-            openjdk:8-jdk-alpine\ 
-            ./gradlew clean build
+          sudo docker run --ulimit nofile=8096:8096 --rm -v "$PWD":/workspace -w /workspace -e APP_API_KEY="${APP_API_KEY}" openjdk:8-jdk-alpine ./gradlew clean build
 
       - name: Set version
         id: set_version
